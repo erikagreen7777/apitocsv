@@ -4,6 +4,7 @@ const fs = require("fs");
 
 const curlTest = new Curl();
 const terminate = curlTest.close.bind(curlTest);
+const dataHash = new Map();
 
 curlTest.setOpt(Curl.option.URL, "https://reqres.in/api/users");
 curlTest.setOpt(Curl.option.POST, true);
@@ -23,13 +24,28 @@ curlTest.on("end", function (statusCode, data, headers) {
 	// console.info("Length: " + data.length);
 	// console.info("***");
 	// console.info("Total time taken: " + this.getInfo("TOTAL_TIME"))
-console.log(data)
-console.log(Object.keys(data))
+// console.log("data " + data)
+	const json = JSON.parse(data)
 
-	// fs.writeFile("data.csv", csv, "utf-8", (err) => {
-	// 	if (err) console.log(err);
-	// 	else console.log("Data saved");
-	//   });
+	const columns = Object.keys(json)
+	const rows = Object.values(json)
+
+	const csvData = columns + "\n" + rows
+
+
+	// Object.keys(json).map((key) => {
+	// 	if (!dataHash.get(key)) {
+	// 		dataHash.set(key, key)
+	// 	}
+	// })
+	// for (let [key, value] of dataHash) {
+	// 	console.log(`${key} = ${value}`);
+	//   }
+
+	fs.writeFile("data.csv", csvData, "utf-8", (err) => {
+		if (err) console.log(err);
+		else console.log("Data saved");
+	  });
 	this.close();
 });
 
